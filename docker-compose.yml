@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - joonik
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    command: npm run dev
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    networks:
+      - joonik
+
+networks:
+  joonik:
+    driver: bridge
