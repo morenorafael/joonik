@@ -49,4 +49,93 @@ class ListLocationTest extends TestCase
             ],
         ]);
     }
+
+    public function test_can_filter_locations_by_code(): void
+    {
+        // Given
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['view-locations']
+        );
+
+        Location::factory(3)->create();
+        $location = Location::factory()->create([
+            'code' => 'SEDE-50',
+        ]);
+
+        // Then
+        $response = $this->getJson(route('api.v1.locations', [
+            'filter' => [
+                'code' => '50',
+            ],
+        ]));
+
+        // When
+        $response->assertJsonCount(1, 'data')
+            ->assertJson([
+                'data' => [
+                    [
+                        'id' => $location->id,
+                        'code' => 'SEDE-50',
+                        'name' => $location->name,
+                        'image' => $location->image,
+                    ],
+                ],
+            ]);
+    }
+
+    public function test_can_filter_locations_by_name(): void
+    {
+        // Given
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['view-locations']
+        );
+
+        Location::factory(3)->create();
+        $location = Location::factory()->create([
+            'name' => 'Name location',
+        ]);
+
+        // Then
+        $response = $this->getJson(route('api.v1.locations', [
+            'filter' => [
+                'name' => 'name location',
+            ],
+        ]));
+
+        // When
+        $response->assertJsonCount(1, 'data')
+            ->assertJson([
+                'data' => [
+                    [
+                        'id' => $location->id,
+                        'code' => $location->code,
+                        'name' => 'Name location',
+                        'image' => $location->image,
+                    ],
+                ],
+            ]);
+    }
+
+    public function test_cannot_filter_by_unknown_filters(): void
+    {
+        // Given
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['view-locations']
+        );
+
+        Location::factory(3)->create();
+
+        // Then
+        $response = $this->getJson(route('api.v1.locations', [
+            'filter' => [
+                'unknown' => 'filter',
+            ],
+        ]));
+
+        // When
+        $response->assertStatus(400);
+    }
 }

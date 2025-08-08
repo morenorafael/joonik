@@ -11,9 +11,17 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Location::all();
+        $locations = Location::query();
 
-        return LocationResource::collection($locations);
+        $allowedFilters = ['code', 'name'];
+
+        foreach (request('filter', []) as $filter => $value) {
+            abort_unless(in_array($filter, $allowedFilters), 400);
+
+            $locations->whereLike($filter, "%{$value}%");
+        }
+
+        return LocationResource::collection($locations->paginate());
     }
 
     public function store(Request $request)
