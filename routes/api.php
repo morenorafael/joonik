@@ -9,8 +9,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::group([
+    'prefix' => 'api/v1',
+    'as' => 'api.v1.',
     'middleware' => ['auth:sanctum'],
 ], function () {
-    Route::get('api/v1/locations', [LocationController::class, 'index'])->name('api.v1.locations.index')->middleware('ability:view-locations');
-    Route::post('api/v1/locations', [LocationController::class, 'store'])->name('api.v1.locations.store')->middleware('ability:create-locations');
+    Route::apiResource('api/v1/locations', LocationController::class)->only(['index', 'store']);
 });
