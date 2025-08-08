@@ -8,4 +8,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('api/v1/locations', [LocationController::class, 'index'])->name('api.v1.locations');
+Route::group([
+    'middleware' => ['auth:sanctum']
+], function () {
+    Route::get('api/v1/locations', [LocationController::class, 'index'])->name('api.v1.locations')->middleware('ability:view-locations');
+});

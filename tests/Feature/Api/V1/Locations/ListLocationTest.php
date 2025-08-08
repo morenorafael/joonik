@@ -16,14 +16,14 @@ class ListLocationTest extends TestCase
     {
         // Given
         Sanctum::actingAs(
-            User::factory()->create(),
+            $user = User::factory()->create(),
             ['view-locations']
         );
 
         $locations = Location::factory(3)->create();
 
         // Then
-        $response = $this->getJson(route('api.v1.locations'));
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations'));
 
         // When
         $response->assertJson([
@@ -54,7 +54,7 @@ class ListLocationTest extends TestCase
     {
         // Given
         Sanctum::actingAs(
-            User::factory()->create(),
+            $user = User::factory()->create(),
             ['view-locations']
         );
 
@@ -64,7 +64,7 @@ class ListLocationTest extends TestCase
         ]);
 
         // Then
-        $response = $this->getJson(route('api.v1.locations', [
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations', [
             'filter' => [
                 'code' => '50',
             ],
@@ -88,7 +88,7 @@ class ListLocationTest extends TestCase
     {
         // Given
         Sanctum::actingAs(
-            User::factory()->create(),
+            $user = User::factory()->create(),
             ['view-locations']
         );
 
@@ -98,7 +98,7 @@ class ListLocationTest extends TestCase
         ]);
 
         // Then
-        $response = $this->getJson(route('api.v1.locations', [
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations', [
             'filter' => [
                 'name' => 'name location',
             ],
@@ -122,14 +122,14 @@ class ListLocationTest extends TestCase
     {
         // Given
         Sanctum::actingAs(
-            User::factory()->create(),
+            $user = User::factory()->create(),
             ['view-locations']
         );
 
         Location::factory(3)->create();
 
         // Then
-        $response = $this->getJson(route('api.v1.locations', [
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations', [
             'filter' => [
                 'unknown' => 'filter',
             ],
@@ -137,5 +137,30 @@ class ListLocationTest extends TestCase
 
         // When
         $response->assertStatus(400);
+    }
+
+    public function test_a_guest_user_cannot_fetch_locations(): void
+    {
+        // Given
+        // Then
+        $response = $this->getJson(route('api.v1.locations'));
+
+        // When
+        $response->assertUnauthorized();
+    }
+
+    public function test_a_user_without_scope_cannot_fetch_locations(): void
+    {
+        // Given
+        Sanctum::actingAs(
+            $user = User::factory()->create(),
+            ['other-scope']
+        );
+
+        // Then
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations'));
+
+        // When
+        $response->assertForbidden();
     }
 }
