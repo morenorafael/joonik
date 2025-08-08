@@ -17,7 +17,7 @@ class LocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => 'SEDE-' . fake()->unique()->randomDigit(),
+            'code' => 'SEDE-'.fake()->unique()->randomDigit(),
             'name' => fake()->word(),
             'image' => fake()->imageUrl(),
         ];
