@@ -11,7 +11,7 @@ class StoreLocationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,22 @@ class StoreLocationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'code' => 'required|unique:locations,code',
+            'name' => 'required|string',
+            'image' => 'required|url',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'code.required' => 'The code is required',
+
+            'name.required' => 'The name is required',
+            'name.string' => 'The name must be a string',
+
+            'image.required' => 'The image is required',
+            'image.url' => 'The image must be an url',
         ];
     }
 }

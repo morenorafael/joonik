@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreLocationRequest;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
 use Illuminate\Http\Request;
@@ -28,13 +29,9 @@ class LocationController extends Controller
         return LocationResource::collection($locations->paginate());
     }
 
-    public function store(Request $request)
+    public function store(StoreLocationRequest $request)
     {
-        $location = Location::create([
-            'code' => $request->code,
-            'name' => $request->name,
-            'image' => $request->image,
-        ]);
+        $location = Location::create($request->validated());
 
         return LocationResource::make($location);
     }

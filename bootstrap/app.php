@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Http\Middleware\CheckAbilities;
 use Laravel\Sanctum\Http\Middleware\CheckForAnyAbility;
 
@@ -20,5 +21,17 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (Throwable $e, $request) {
+            if ($request->expectsJson()) {
+                if ($e instanceof ValidationException) {
+
+                    return response()->json([
+                        'error' => [
+                            'message' => $e->validator->errors()->first(),
+                            'code' => 'E_INVALID_PARAM'
+                        ]
+                        ], 422);
+                }
+            }
+        });
     })->create();
