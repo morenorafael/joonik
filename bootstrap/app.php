@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Responses\ValidationErrorResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -24,13 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Throwable $e, $request) {
             if ($request->expectsJson()) {
                 if ($e instanceof ValidationException) {
-
-                    return response()->json([
-                        'error' => [
-                            'message' => $e->validator->errors()->first(),
-                            'code' => 'E_INVALID_PARAM'
-                        ]
-                        ], 422);
+                    return new ValidationErrorResponse($e);
                 }
             }
         });
