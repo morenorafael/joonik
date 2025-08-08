@@ -23,7 +23,7 @@ class ListLocationTest extends TestCase
         $locations = Location::factory(3)->create();
 
         // Then
-        $response = $this->actingAs($user)->getJson(route('api.v1.locations'));
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations.index'));
 
         // When
         $response->assertJson([
@@ -64,7 +64,7 @@ class ListLocationTest extends TestCase
         ]);
 
         // Then
-        $response = $this->actingAs($user)->getJson(route('api.v1.locations', [
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations.index', [
             'filter' => [
                 'code' => '50',
             ],
@@ -98,7 +98,7 @@ class ListLocationTest extends TestCase
         ]);
 
         // Then
-        $response = $this->actingAs($user)->getJson(route('api.v1.locations', [
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations.index', [
             'filter' => [
                 'name' => 'name location',
             ],
@@ -129,7 +129,7 @@ class ListLocationTest extends TestCase
         Location::factory(3)->create();
 
         // Then
-        $response = $this->actingAs($user)->getJson(route('api.v1.locations', [
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations.index', [
             'filter' => [
                 'unknown' => 'filter',
             ],
@@ -143,7 +143,7 @@ class ListLocationTest extends TestCase
     {
         // Given
         // Then
-        $response = $this->getJson(route('api.v1.locations'));
+        $response = $this->getJson(route('api.v1.locations.index'));
 
         // When
         $response->assertUnauthorized();
@@ -158,7 +158,7 @@ class ListLocationTest extends TestCase
         );
 
         // Then
-        $response = $this->actingAs($user)->getJson(route('api.v1.locations'));
+        $response = $this->actingAs($user)->getJson(route('api.v1.locations.index'));
 
         // When
         $response->assertForbidden();

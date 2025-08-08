@@ -30,7 +30,13 @@ class LocationController extends Controller
 
     public function store(Request $request)
     {
-        //
+        $location = Location::create([
+            'code' => $request->code,
+            'name' => $request->name,
+            'image' => $request->image,
+        ]);
+
+        return LocationResource::make($location);
     }
 
     public function show(Location $location)

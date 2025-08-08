@@ -9,7 +9,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::group([
-    'middleware' => ['auth:sanctum']
+    'middleware' => ['auth:sanctum'],
 ], function () {
-    Route::get('api/v1/locations', [LocationController::class, 'index'])->name('api.v1.locations')->middleware('ability:view-locations');
+    Route::get('api/v1/locations', [LocationController::class, 'index'])->name('api.v1.locations.index')->middleware('ability:view-locations');
+    Route::post('api/v1/locations', [LocationController::class, 'store'])->name('api.v1.locations.store')->middleware('ability:create-locations');
 });
