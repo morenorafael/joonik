@@ -21,21 +21,11 @@ class LocationController extends Controller implements HasMiddleware
 
     public function index()
     {
-        $locations = Location::query();
+        $locations = Location::query()
+            ->allowedFilters(['code', 'name'])
+            ->paginate();
 
-        $allowedFilters = ['code', 'name'];
-
-        foreach (request('filter', []) as $filter => $value) {
-            abort_unless(in_array($filter, $allowedFilters), 400);
-
-            if ($locations->hasNamedScope($filter)) {
-                $locations->{$filter}($value);
-            } else {
-                $locations->whereLike($filter, "%{$value}%");
-            }
-        }
-
-        return LocationResource::collection($locations->paginate());
+        return LocationResource::collection($locations);
     }
 
     public function store(StoreLocationRequest $request)
