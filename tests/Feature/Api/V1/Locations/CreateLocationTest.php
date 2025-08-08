@@ -190,4 +190,37 @@ class CreateLocationTest extends TestCase
             ],
         ])->assertStatus(422);
     }
+
+    public function test_a_guest_user_cannot_create_locations(): void
+    {
+        // Given
+        // When
+        $response = $this->postJson(route('api.v1.locations.store'), [
+            'code' => 'SEDE-01',
+            'name' => 'Location name',
+            'image' => 'http://image-url',
+        ]);
+
+        // Then
+        $response->assertUnauthorized();
+    }
+
+    public function test_a_user_without_scope_cannot_create_locations(): void
+    {
+        // Given
+        Sanctum::actingAs(
+            $user = User::factory()->create(),
+            ['other-scope']
+        );
+
+        // When
+        $response = $this->actingAs($user)->postJson(route('api.v1.locations.store'), [
+            'code' => 'SEDE-01',
+            'name' => 'Location name',
+            'image' => 'http://image-url',
+        ]);
+
+        // Then
+        $response->assertForbidden();
+    }
 }

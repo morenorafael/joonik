@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLocationRequest;
 use App\Http\Resources\LocationResource;
 use App\Models\Location;
-use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
@@ -34,20 +33,5 @@ class LocationController extends Controller
         $location = Location::create($request->validated());
 
         return LocationResource::make($location);
-    }
-
-    public function show(Location $location)
-    {
-        //
-    }
-
-    public function update(Request $request, Location $location)
-    {
-        //
-    }
-
-    public function destroy(Location $location)
-    {
-        //
     }
 }
