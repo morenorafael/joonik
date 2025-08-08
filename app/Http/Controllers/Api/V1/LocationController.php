@@ -18,7 +18,11 @@ class LocationController extends Controller
         foreach (request('filter', []) as $filter => $value) {
             abort_unless(in_array($filter, $allowedFilters), 400);
 
-            $locations->whereLike($filter, "%{$value}%");
+            if ($locations->hasNamedScope($filter)) {
+                $locations->{$filter}($value);
+            } else {
+                $locations->whereLike($filter, "%{$value}%");
+            }
         }
 
         return LocationResource::collection($locations->paginate());
