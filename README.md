@@ -1,3 +1,9 @@
+Clona el proyecto:
+
+```sh
+git clone https://github.com/morenorafael/joonik.git
+```
+
 Para levantar los servicios con docker puedes ejecutar:
 
 ```sh
@@ -19,6 +25,11 @@ docker compose exec -it backend cp .env.example .env
 docker compose exec -it backend php artisan key:generate
 docker compose exec -it backend php artisan migrate --seed
 ```
+
+
+ya puedes abrir el front [aqui](http://localhost:5173/)
+
+---
 
 Para ejecutar los test
 
